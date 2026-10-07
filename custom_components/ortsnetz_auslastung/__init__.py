@@ -76,8 +76,10 @@ async def _send(hass: HomeAssistant, entry: ConfigEntry) -> None:
         frequency_hz = _value(hass, frequency_entity)
         if frequency_hz is None:
             _LOGGER.warning("Netzfrequenz-Sensor für Ortsnetz-Auslastung ist nicht verfügbar")
-        else:
+        elif 45.0 <= frequency_hz <= 55.0:
             payload["grid_frequency_hz"] = frequency_hz
+        else:
+            _LOGGER.warning("Unplausible Netzfrequenz für Ortsnetz-Auslastung; Messung wird ohne Frequenz gesendet")
     url = data[CONF_API_URL].rstrip("/")
     if not url.endswith("/v1/measurements"):
         url = f"{url}/v1/measurements"
